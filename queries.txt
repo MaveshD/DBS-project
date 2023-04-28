@@ -1,0 +1,131 @@
+1. List all Students in the University.
+
+Select reg_no,name from student;
+
+2. List all Instructors who teach the course 'Database Systems'.
+
+select i_id,name from instructor where i_id in(select i_id from courses where c_name='Database Systems');
+
+3. Find the number of students in each course.
+
+select c_id,count(distinct reg_no) from takes group by c_id;
+
+4. List all students who have given feedback.
+
+ select reg_no,name from student where reg_no in(select reg_no from feedback); 
+
+5. Create a view of all instructors whose name starts with 'a' and retrieve their contact information.
+
+create view instr as select * from instructor where name like 'a%';
+select name,contact_no,mail from instr;
+
+6. List all female students who take the course 'MeX-001'.
+
+with temp as(select * from student natural join courses where sex='F')
+select reg_no,name from temp where c_id in(select c_id from takes where c_id='MeX-001');
+
+7. List all students and the courses in which their attendance is below 75%.
+
+select reg_no,name,c_id from student natural join takes where attendance<75;
+
+8. List the students and the length of their name who are from the Comp. Sci Branch and are female.
+
+with temp as(select name from student where branch='Comp. Sci.' and sex='F')
+select name,length(name) as lenght from student;
+
+9. List all Course names in Uppercase.
+
+select c_id,upper(c_name) from courses;  
+
+10. List all students who have given feedback and take the course 'CSE-001'.
+
+with temp as(select name,reg_no from student natural join takes natural join courses where c_id='CSE-001')
+select reg_no,name from temp where reg_no in (select reg_no from feedback);
+
+11. Write a PL/SQL block to display the address of a given student
+
+SET SERVEROUTPUT ON
+DECLARE
+	reg student.reg_no%TYPE;
+	A student.address%TYPE;
+BEGIN
+	reg:='&regno';
+	SELECT address INTO A FROM student WHERE reg_no = reg;
+	DBMS_OUTPUT.PUT_LINE('THE address is: ' || A);
+END;
+/
+
+12. Create a trigger to check whether a new student's name is valid
+
+CREATE OR REPLACE TRIGGER instrInsert
+BEFORE INSERT ON instructor
+For each row
+BEGIN
+IF LENGTH(TRIM(TRANSLATE(:NEW.name, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ' '))) > 0 THEN
+    RAISE_APPLICATION_ERROR(-20100,'Name must contain only alphabets');
+END IF;
+END;
+/
+
+insert into student values(210905005,'t002','Jan1e',18,'F','14-FEB-2004',3,9000000005,'jane@gmail.com',5.23,'B','Humanities','Yellow Avenue 2','jane123');
+
+13. Create a trigger to add a students details to a new warning table if their attendance is below 75%.
+
+create table warning(
+    reg_no varchar(10),
+    c_id varchar(10),
+    attendance number(5,2),
+    PRIMARY KEY (reg_no,c_id));
+
+set serveroutput on
+create or replace trigger warnAttendance
+after update on takes
+for each row
+begin
+insert into warning values(:old.reg_no, :old.c_id, :new.attendance);
+end;
+/
+
+14. Write a function to Retrieve the passwords of a student of given registration number.
+
+CREATE OR REPLACE PROCEDURE password(reg VARCHAR) IS
+    CURSOR C1 IS SELECT reg_no,passwd FROM student;
+    pass student.passwd%TYPE;
+BEGIN
+for i in C
+    if i.reg_no=reg THEN
+	pass=i.passwd;
+DBMS_OUTPUT.PUT_LINE('Password of ' || reg || ' is ' || pass);
+END;
+/
+
+BEGIN
+        password(&RegistrationNo.);
+END;
+/
+
+15. Write a procedure using a PL/SQL block to display all students with attendance below 75 in each course.
+
+Set serveroutput on
+CREATE OR REPLACE PROCEDURE Disp(cid VARCHAR) IS
+	CURSOR C1 IS SELECT reg_no,c_id,attendance FROM takes WHERE c_id = cid;
+BEGIN
+	FOR I IN C1
+	LOOP
+		IF (I.attendance<75) THEN
+			DBMS_OUTPUT.PUT_LINE(I.reg_no || ' ' || I.c_id||' '||I.attendance);
+		END IF;
+	END LOOP;
+END;
+/
+
+DECLARE
+	CURSOR C IS SELECT distinct(c_id) from Takes;
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Reg_no    c_id    attendance');
+	For I in C
+	LOOP	
+		Disp(I.c_id);
+	END LOOP;
+END;
+/

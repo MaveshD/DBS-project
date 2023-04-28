@@ -1,0 +1,40 @@
+insert into timetable values('t001','8am-11pm : CSE-001 2pm-5pm : CSE-002');
+insert into timetable values('t002','8am-11pm : HUM-001 2pm-5pm : HUM-002');
+insert into timetable values('t003','8am-11pm : MeX-001 2pm-5pm : MeX-002');
+
+insert into student values(210905000,'t001','John',19,'M','08-APR-2003',3,9000000000,'john@gmail.com',6.47,'A','Comp. Sci','Blue Avenue 1','john123');
+insert into student values(210905001,'t002','Jeff',20,'M','24-NOV-2002',5,9000000001,'jeff@gmail.com',3.12,'B','Humanities','Blue Avenue 2','jeff123');
+insert into student values(210905002,'t001','Jeniffer',19,'F','12-JUL-2003',3,9000000002,'jeniffer@gmail.com',9.41,'A','Comp. Sci','Red Avenue 1','jeniffer123');
+insert into student values(210905003,'t003','Joe',21,'M','17-JAN-2001',7,9000000003,'joe@gmail.com',5.95,'C','MechX','Red Avenue 2','joe123');
+insert into student values(210905004,'t003','Jessica',18,'F','01-JUN-2004',3,9000000004,'jessica@gmail.com',7.92,'C','MechX','Yellow Avenue 1','jessica123');
+
+insert into instructor values('EMP001','Sean',9100000000,'sean@gmail.com');
+insert into instructor values('EMP002','Scott',9100000001,'scott@gmail.com');
+insert into instructor values('EMP003','Sarah',9100000002,'sarah@gmail.com');
+insert into instructor values('EMP004','Selina',9100000003,'selina@gmail.com');
+insert into instructor values('EMP005','Samuel',9100000004,'samuel@gmail.com');
+
+insert into courses values('CSE-001','Data Science','EMP005');
+insert into courses values('CSE-002','Database Systems','EMP001');
+insert into courses values('MeX-001','LICA','EMP002');
+insert into courses values('MeX-002','Robotics','EMP004');
+insert into courses values('HUM-001','Communication','EMP003');
+insert into courses values('HUM-002','Environmental Studies','EMP003');
+
+insert into takes values(210905000,'CSE-001','B',84);
+insert into takes values(210905001,'HUM-001','C',67);
+insert into takes values(210905002,'CSE-001','A',93);
+insert into takes values(210905003,'MeX-001','D',77);
+insert into takes values(210905004,'MeX-001','B',82);
+insert into takes values(210905000,'CSE-002','E',89);
+insert into takes values(210905001,'HUM-002','B',63);
+insert into takes values(210905002,'CSE-002','A',45);
+insert into takes values(210905003,'MeX-002','B',96);
+insert into takes values(210905004,'MeX-002','A',100);
+
+insert into feedback values(1000000000,'Course','The Data science Course is simply wonderful, It gives you an in-depth understanding of the topic.',210905000);
+insert into feedback values(1000000001,'Instructor','Professor Samuel is a great teacher and mentor, I easily understood all the topics he taught me.',210905000);
+insert into feedback values(1000000002,'Portal','10/10 portal, just love the UI of this site. Its much better than some other well known university websites.',210905001);
+
+
+
