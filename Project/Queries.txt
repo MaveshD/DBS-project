@@ -1,0 +1,107 @@
+1. List all Students in the University.
+
+Select reg_no,name from student;
+
+2. List all Instructors who teach the course 'Database Systems'.
+
+select i_id,name from instructor as i,courses as c where i.i_id = c.i_id and c_name='Database Systems';
+
+3. Find the number of students in each course.
+
+select c_id,count(distinct reg_no) from takes group by c_id;
+
+4. List all students who have given feedback.
+
+select distinct(reg_no),name from student as s,feedback as f where s.reg_no=f.reg_no; 
+
+5. Create a view of all instructors whose name starts with 'a' and retrieve their contact information.
+
+create view instr as select * from instructor where name like 'a%';
+select name,contact_no,mail from instr;
+
+6. List all female students who take the course 'MeX-001'.
+
+with temp as(select * from student natural join courses where sex='F')
+select reg_no,name from temp as tm,takes as ta where tm.c_id=ta.c_id and c_id='MeX-001';
+
+7. List all students and the courses in which their attendance is below 75%.
+
+select reg_no,name,c_id from student natural join takes where attendance<75;
+
+8. List the students and the length of their name who are from the Comp. Sci Branch and are female.
+
+with temp as(select name from student where branch='Comp. Sci.' and sex='F')
+select name,length(name) as lenght from student;
+
+9. List all Course names in Uppercase.
+
+select c_id,upper(c_name) from courses;  
+
+10. List all students who have given feedback and take the course 'CSE-001'.
+
+with temp as(select name,reg_no from student natural join takes natural join courses where c_id='CSE-001')
+select reg_no,name from temp as t,feedback as f where t.reg_no=f.reg_no;
+
+11. Write a PL/SQL block to display the address of a given student
+
+SET SERVEROUTPUT ON
+
+DECLARE
+	REGNO student.reg_no%TYPE;
+	A student.reg_no.address%TYPE;
+BEGIN
+	REGNO := '&regno';
+	SELECT address
+	INTO A
+	FROM student
+	WHERE reg_no = REGNO;
+	DBMS_OUTPUT.PUT_LINE('THE GPA is: ' || A);
+END;
+/
+
+12. Create a trigger to check whether a new student's name is valid
+
+CREATE OR REPLACE TRIGGER instrInsert
+BEFORE INSERT ON instructor
+BEGIN
+IF LENGTH(TRIM(TRANSLATE(:NEW.name, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ' '))) > 0 THEN
+    RAISE_APPLICATION_ERROR(-20100,'Name must contain only alphabets');
+END IF;
+END;
+/
+
+insert into student values(210905005,t002,'Jane',18,'F',14-02-2004,3,9000000005,'jane@gmail.com',5.23,'B','Humanities','Yellow Avenue 2');
+
+13. Create a trigger to add a students details to a new warning table if their attendance is below 75%.
+
+create table warning(
+    reg_no varchar(10),
+    attendance number(5,2),
+    PRIMARY KEY (reg_no));
+
+create or replace trigger warnAttendance
+after update of attendance on takes
+begin
+insert into warning values(:old.reg_no, :old.c_id, :new.attendance);
+end;
+/
+
+14. Write a function to Retrieve the passwords of a student of given registration number.
+
+CREATE OR REPLACE PROCEDURE password(reg VARCHAR) IS
+    CURSOR C1 IS SELECT reg_no,passwd FROM student;
+    pass student.passwd%TYPE;
+BEGIN
+for i in C
+    if i.reg_no=reg THEN
+	pass=i.passwd;
+DBMS_OUTPUT.PUT_LINE('Password of ' || reg || ' is ' || pass);
+END;
+/
+
+BEGIN
+        password(&RegistrationNo.);
+END;
+/
+
+15. 
